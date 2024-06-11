@@ -1,0 +1,22 @@
+If:
+  PathMatch: [.*\.cu, .*\.hpp]
+CompileFlags:
+  Add:
+    - -std=c++17
+    - --cuda-path=C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v12.3
+    - --cuda-gpu-arch=sm_75
+  Remove:
+    - -gencode
+    - -G
+    - -imsvc*
+    - -Zi*
+Diagnostics:
+  Suppress:
+    - drv_unknown_argument
+    - drv_unsupported_opt
+---
+CompileFlags:
+  Remove:
+    - -rdc=true
+    # - -gencode
+    # - -imsvc*

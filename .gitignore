@@ -1,0 +1,10 @@
+# Xmake cache
+.xmake/
+build/
+
+# just for local test
+models/
+
+# IDE related
+.vscode/
+.VSCodeCounter/
