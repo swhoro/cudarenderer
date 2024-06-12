@@ -108,6 +108,12 @@ using Vec3 = Vec<3>;
 using Vec4 = Vec<4>;
 
 
+struct Vec2i {
+    int x;
+    int y;
+};
+
+
 template <int dim>
 __device__ __host__ inline Vec<dim> normalize(Vec<dim> vec) {
 #ifdef __CUDA_ARCH__

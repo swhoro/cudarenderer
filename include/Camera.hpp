@@ -16,6 +16,8 @@ public:
            unsigned int fov = 90);
     void move(Vec3 offset);
     void rotate(const float yaw, const float pitch);
+    Vec3 getFront() const;
+    Vec3 getUp() const;
     Vec3 getRight() const;
     Mat4 getViewMatrix() const;
     Mat4 getProjectionMatrix() const;

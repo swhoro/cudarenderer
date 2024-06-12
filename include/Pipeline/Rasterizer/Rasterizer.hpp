@@ -3,8 +3,8 @@
 #include <vector>
 #include "Asset/Model.hpp"
 #include "Camera.hpp"
-#include "Pipeline.hpp"
 #include "Math/Mat.hpp"
+#include "Pipeline/Pipeline.hpp"
 
 
 class FragmentData {
@@ -40,7 +40,7 @@ private:
      *
      * all fragments in one pixel will be stored in adjacent memory
      */
-    FragmentData      *dev_fragmentData;
+    FragmentData      *dev_fragmentDatas;
     // red, green, blue
     Vec3              *pixelColor;
     Vec3              *dev_pixelColor;

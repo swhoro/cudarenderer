@@ -55,30 +55,33 @@ Mesh Model::processMesh(aiMesh *mesh, const aiScene *scene) {
         vector.z         = mesh->mVertices[i].z;
         vertex.postition = vector;
 
-        vector.x      = mesh->mNormals[i].x;
-        vector.y      = mesh->mNormals[i].y;
-        vector.z      = mesh->mNormals[i].z;
+        // vector.x      = mesh->mNormals[i].x;
+        // vector.y      = mesh->mNormals[i].y;
+        // vector.z      = mesh->mNormals[i].z;
         vertex.normal = vector;
 
-        if (mesh->mTextureCoords[0]) {
-            Vec2 vec;
-            vec.x            = mesh->mTextureCoords[0][i].x;
-            vec.y            = mesh->mTextureCoords[0][i].y;
-            vertex.texCoords = vec;
-        } else {
-            vertex.texCoords = Vec2(0.0f, 0.0f);
-        }
+        // if (mesh->mTextureCoords[0]) {
+        //     Vec2 vec;
+        //     vec.x            = mesh->mTextureCoords[0][i].x;
+        //     vec.y            = mesh->mTextureCoords[0][i].y;
+        //     vertex.texCoords = vec;
+        // } else {
+        //     vertex.texCoords = Vec2(0.0f, 0.0f);
+        // }
 
         vertices.push_back(vertex);
     }
 
+    int nrindices = 0;
     // load indices
     for (unsigned int i = 0; i < mesh->mNumFaces; i++) {
         aiFace face = mesh->mFaces[i];
+        nrindices += face.mNumIndices;
         for (unsigned int j = 0; j < face.mNumIndices; j++) {
             indices.push_back(face.mIndices[j]);
         }
     }
+    std::cout << nrindices << std::endl;
 
     // load textures
     if (mesh->mMaterialIndex > 0) {

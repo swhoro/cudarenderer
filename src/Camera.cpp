@@ -34,6 +34,14 @@ void Camera::rotate(const float yawOffset, const float pitchOffset) {
     this->cameraRight = this->cameraFront.cross(this->cameraUp);
 }
 
+Vec3 Camera::getFront() const {
+    return cameraFront;
+}
+
+Vec3 Camera::getUp() const {
+    return cameraUp;
+}
+
 Vec3 Camera::getRight() const {
     return cameraRight;
 }
