@@ -37,7 +37,8 @@ __global__ void vertexShader(const Vertex *const       verticies,
  *
  *      c
  */
-__device__ static inline bool isInTriangle(const Vec2 &p, const Vec2 &a, const Vec2 &b, const Vec2 &c) {
+__device__ static inline bool
+isInTriangle(const Vec2 &p, const Vec2 &a, const Vec2 &b, const Vec2 &c) {
     Vec2 t;
 
     t = b - a;
@@ -75,7 +76,8 @@ __device__ static inline Vec4 getBoundingBox(const Vec4 &a, const Vec4 &b, const
     return result;
 }
 
-__device__ static inline Vec3 calBarycentric(const Vec2 &p, const Vec4 &a, const Vec4 &b, const Vec4 &c) {
+__device__ static inline Vec3
+calBarycentric(const Vec2 &p, const Vec4 &a, const Vec4 &b, const Vec4 &c) {
     Vec3 result;
 
     float ta = (p.y - a.y) * (c.x - a.x) - (p.x - a.x) * (c.y - a.y);
@@ -91,9 +93,9 @@ __device__ static inline Vec3 calBarycentric(const Vec2 &p, const Vec4 &a, const
 }
 
 __device__ static inline unsigned int upLeftIdx2bottomLeftIdx(const unsigned int &idx,
-                                                const int          &width,
-                                                const int          &height,
-                                                const unsigned int &msaa) {
+                                                              const int          &width,
+                                                              const int          &height,
+                                                              const unsigned int &msaa) {
     const unsigned int fragmentsPerRow = width * msaa * msaa;
     // calculate which row it is from the top
     unsigned int       rowIdx          = idx / fragmentsPerRow;
@@ -112,10 +114,10 @@ __device__ static inline unsigned int upLeftIdx2bottomLeftIdx(const unsigned int
  * or the returned Vec2 is ceiled
  */
 __device__ static inline Vec2i ndc2screen(const Vec2         &p,
-                            const int          &width,
-                            const int          &height,
-                            const unsigned int &msaa,
-                            bool                less) {
+                                          const int          &width,
+                                          const int          &height,
+                                          const unsigned int &msaa,
+                                          bool                less) {
     int         resultx;
     int         resulty;
     const float w = width * msaa;
@@ -135,10 +137,8 @@ __device__ static inline Vec2i ndc2screen(const Vec2         &p,
  * p.y is the index of point from left to right,
  * x and y in p are always positive integers.
  */
-__device__ static inline Vec2 screen2ndc(const Vec2i        &p,
-                           const int          &width,
-                           const int          &height,
-                           const unsigned int &msaa) {
+__device__ static inline Vec2
+screen2ndc(const Vec2i &p, const int &width, const int &height, const unsigned int &msaa) {
     Vec2      result;
     const int w = width * msaa;
     const int h = height * msaa;
@@ -164,11 +164,11 @@ scrFragment2idx(const Vec2i &p, const int &width, const int &height, const unsig
     return scr_pixel.y * width * msaa * msaa + scr_pixel.x * msaa * msaa + indexInPixel;
 }
 
-__device__ static inline float intersect(const Vec3  &barycentric,
-                           const float &a,
-                           const float &b,
-                           const float &c,
-                           bool         perspective = true) {
+__device__ static inline float interpolate(const Vec3  &barycentric,
+                                           const float &a,
+                                           const float &b,
+                                           const float &c,
+                                           bool         perspective = true) {
     if (perspective) {
         const float ta = barycentric.x / a;
         const float tb = barycentric.y / b;
@@ -205,7 +205,7 @@ __global__ void rasterizeFragmentOnTriangle(const Vec2i         scr_min,
         const unsigned int bl_fragmentIdx =
             upLeftIdx2bottomLeftIdx(fragmentIdx, width, height, msaa);
         const Vec3 &barycentric = calBarycentric(ndc_p, ndc_a, ndc_b, ndc_c);
-        const float tempz       = intersect(barycentric, ndc_a.z, ndc_b.z, ndc_c.z);
+        const float tempz       = interpolate(barycentric, ndc_a.z, ndc_b.z, ndc_c.z);
 
         fragmentDatas[bl_fragmentIdx].inMesh = true;
 
@@ -253,7 +253,7 @@ __global__ void rasterize(const Vec4 *const         ndc_positions,
 
         Vec2i scr_min = ndc2screen(Vec2{boundingbox.x, boundingbox.w}, width, height, msaa, true);
         Vec2i scr_max = ndc2screen(Vec2{boundingbox.z, boundingbox.y}, width, height, msaa, false);
-        
+
         // check if the triangle is in the screen
         if (scr_min.x >= width * msaa || scr_min.y >= height * msaa) { continue; }
         if (scr_max.x < 0 || scr_max.y < 0) { continue; }
@@ -264,9 +264,9 @@ __global__ void rasterize(const Vec4 *const         ndc_positions,
 
         const unsigned int nrFragmentsWidth  = scr_max.x - scr_min.x;
         const unsigned int nrFragmentsHeight = scr_max.y - scr_min.y;
-        const unsigned int nrFragments     = nrFragmentsWidth * nrFragmentsHeight;
-        const unsigned int threadsPerBlock = 768;
-        const unsigned int blocksPerGrid   = (nrFragments + threadsPerBlock - 1) / threadsPerBlock;
+        const unsigned int nrFragments       = nrFragmentsWidth * nrFragmentsHeight;
+        const unsigned int threadsPerBlock   = 768;
+        const unsigned int blocksPerGrid = (nrFragments + threadsPerBlock - 1) / threadsPerBlock;
         rasterizeFragmentOnTriangle<<<blocksPerGrid, threadsPerBlock>>>(scr_min,
                                                                         scr_max,
                                                                         nrFragments,
